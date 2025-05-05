@@ -1,3 +1,7 @@
-export default function Home() {
-  return <h2>Loan Calculator Dashboard</h2>;
-}
+import EmiCalculator from "../components/EmiCalculator";
+
+const Home = () => {
+  return <EmiCalculator />;
+};
+
+export default Home;

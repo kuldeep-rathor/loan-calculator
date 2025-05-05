@@ -3,7 +3,7 @@ import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 // import About from "./pages/About";
 // import ExchangeRates from "./pages/ExchangeRates";
-// import ErrorPage from "./pages/ErrorPage";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
         <Route path="/" element={<Home />} />
         {/* <Route path="/about" element={<About />} /> */}
         {/* <Route path="/exchange-rates" element={<ExchangeRates />} /> */}
-        {/* <Route path="*" element={<ErrorPage />} /> */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );
