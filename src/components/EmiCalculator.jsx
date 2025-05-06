@@ -1,4 +1,13 @@
-import { Box, TextField, Button, Typography } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 import { useState } from "react";
 import { useEmiCalculator } from "../hooks/useEmiCalculator";
 import AmortizationTable from "./AmortizationTable";
@@ -9,6 +18,7 @@ const EmiCalculator = () => {
   const [loanAmount, setLoanAmount] = useState("");
   const [interestRate, setInterestRate] = useState("");
   const [termYears, setTermYears] = useState("");
+  const [currency, setCurrency] = useState("USD");
 
   const { emi, schedule, calculateEMI } = useEmiCalculator();
   const { rates, loading, error } = useExchangeRates();
@@ -18,6 +28,12 @@ const EmiCalculator = () => {
     if (!loanAmount || !interestRate || !termYears) return;
 
     calculateEMI(+loanAmount, +interestRate, +termYears);
+  };
+
+  const convertCurrency = (value) => {
+    if (currency === "USD" || !rates) return value;
+    const rate = rates[currency];
+    return rate ? value * rate : value;
   };
 
   return (
@@ -60,9 +76,32 @@ const EmiCalculator = () => {
       {emi > 0 && (
         <>
           <Typography variant="h6" sx={{ mt: 4 }}>
-            Monthly EMI: ${emi.toFixed(2)}
+            Monthly EMI: {currency} {convertCurrency(emi).toFixed(2)}
           </Typography>
-          <AmortizationTable schedule={schedule} />
+
+          <FormControl sx={{ mt: 2, minWidth: 160 }}>
+            <InputLabel>Currency</InputLabel>
+            <Select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+              label="Currency"
+            >
+              <MenuItem value="USD">USD</MenuItem>
+              <MenuItem value="EUR">EUR</MenuItem>
+              <MenuItem value="INR">INR</MenuItem>
+              <MenuItem value="GBP">GBP</MenuItem>
+              <MenuItem value="JPY">JPY</MenuItem>
+              <MenuItem value="AUD">AUD</MenuItem>
+              <MenuItem value="CAD">CAD</MenuItem>
+            </Select>
+          </FormControl>
+
+          <AmortizationTable
+            schedule={schedule}
+            currency={currency}
+            rates={rates}
+          />
+
           <ConvertedEmiTable
             emi={emi}
             rates={rates}

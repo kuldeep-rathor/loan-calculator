@@ -9,13 +9,19 @@ import {
   Typography,
 } from "@mui/material";
 
-const AmortizationTable = ({ schedule }) => {
+const AmortizationTable = ({ schedule, currency = "USD", rates }) => {
   if (!schedule?.length) return null;
+
+  const getConvertedValue = (value) => {
+    if (currency === "USD" || !rates) return value;
+    const rate = rates[currency];
+    return rate ? value * rate : value;
+  };
 
   return (
     <TableContainer component={Paper} sx={{ mt: 4 }}>
       <Typography variant="h6" sx={{ p: 2 }}>
-        Amortization Schedule (USD)
+        Amortization Schedule ({currency})
       </Typography>
       <Table>
         <TableHead>
@@ -30,9 +36,15 @@ const AmortizationTable = ({ schedule }) => {
           {schedule.map((row) => (
             <TableRow key={row.month}>
               <TableCell>{row.month}</TableCell>
-              <TableCell>{row.principal.toFixed(2)} USD</TableCell>
-              <TableCell>{row.interest.toFixed(2)} USD</TableCell>
-              <TableCell>{row.balance.toFixed(2)} USD</TableCell>
+              <TableCell>
+                {getConvertedValue(row.principal).toFixed(2)} {currency}
+              </TableCell>
+              <TableCell>
+                {getConvertedValue(row.interest).toFixed(2)} {currency}
+              </TableCell>
+              <TableCell>
+                {getConvertedValue(row.balance).toFixed(2)} {currency}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
